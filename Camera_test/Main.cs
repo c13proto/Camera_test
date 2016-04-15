@@ -48,6 +48,11 @@ namespace Camera_test
             Cv.SetCaptureProperty(CAPTURE, CaptureProperty.FrameWidth, w);
             Cv.SetCaptureProperty(CAPTURE, CaptureProperty.FrameHeight, h);
             CAPTURE.Fps = fps;
+
+            if (camera != null) camera.Dispose();
+            camera = Cv.CreateImage(new CvSize(w, h), BitDepth.U8, 3);//カラーらしい
+            camera.Zero();
+
         }
         private void form_ctrl(object sender, EventArgs e)//タイマ割り込みで行う処理
         {
@@ -56,7 +61,7 @@ namespace Camera_test
         void back_ctrl(object sender, ElapsedEventArgs e)
         {
             var frame = Cv.QueryFrame(CAPTURE);
-            if (frame != null)camera = frame.Clone();
+            if (frame != null) Cv.Copy(frame,camera);
             else System.Diagnostics.Debug.WriteLine("frame=null");
             Cv.ReleaseImage(frame);
         }
